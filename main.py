@@ -1,24 +1,34 @@
 import pandas as pd
+import numpy as np
+import sklearn.model_selection as train_test_split
+import matplotlib.pyplot as plt
 
-#import data intro dataframes
+# import data intro dataframes
 df1 = pd.read_csv('dataset/training_data.csv')
 df2 = pd.read_csv('dataset/Geographic_information.csv')
 
-# add
-# for i in range(len(df2.columns.values)):
-#     if df2.columns.values[i] == 'LOCATION':
-#         continue
-#     df1[df2.columns.values[i]] = 'null'
-
+# print the original dataframes
 print('original dataframe with null rows', df1.head(5))
-
 print('geographical dataframe', df2.head(5))
 
-# match up the locations on each of the files and add the columns for df2 to df1 where the locations match
-# for i in range(len(df1['LOCATION'])):
-#     for j in range(len(df2['LOCATION'])):
-#         if df1['LOCATION'][i] == df2['LOCATION'][j]:
-#             pass
-
+# joining the 2 dataframes on the 'LOCATION' columns
 merged_df = pd.merge(df1, df2, how='outer', on='LOCATION')
 print('merged df', merged_df.head(5))
+
+# checking for nulls
+print('merged_df nums', merged_df.isnull().values.any())
+
+# removing NaN columns
+clean_df = merged_df._get_numeric_data()
+print('clean df', clean_df.head(5))
+
+# try to visulalize - fails
+clean_df.plot()
+
+# 80/20 split of the data for training and testing
+train = clean_df.sample(frac=0.8, random_state=200)
+test = clean_df.drop(train.index)
+
+print('train', train.head(5))
+print('test', test.head(5))
+
