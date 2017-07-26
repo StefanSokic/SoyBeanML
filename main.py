@@ -31,21 +31,43 @@ print('train', train.head(5))
 print('test', test.head(5))
 
 # plot the data,
-train.head(1000).plot(x='YEAR', y='YIELD', kind='scatter')
-plt.show()
+# train.head(1000).plot(x='YEAR', y='YIELD', kind='scatter')
+# plt.show()
 
 # linear regression with scikit learn
 # univariate linear regression just on YEAR to start
 # --------- how to split train and test + use multivariate ---------------
-# x_train = train['YEAR'].values.reshape(-1,1)
-# y_train = train['YIELD'].values.reshape(-1,1)
-# x_test = test['YEAR'].values.reshape(-1,1)
-# y_test = test['YIELD'].values.reshape(-1,1)
+
+# the x_train will be matrix is the yeild col removed
+feature_cols = ['TEMP_01']
+target_col = ['YIELD']
+cols = list(train)
+cols.remove(target_col[0])
+feature_cols = cols
+
+x_train = train[feature_cols]
+y_train = train[target_col]
+x_test = test[feature_cols]
+y_test = test[target_col]
 
 # linear regression
-# regr = linear_model.LinearRegression()
-# regr.fit(x_train, y_train)
+regr = linear_model.LinearRegression()
+regr.fit(x_train, y_train)
 
 # showing some coefficients
-# print('Coefficients', regr.coef_)
+print('Coefficients', regr.coef_)
 
+print("Mean squared error: %.2f"
+      % np.mean((regr.predict(x_test) - y_test) ** 2))
+# Explained variance score: 1 is perfect prediction
+print('Variance score: %.2f' % regr.score(x_test, y_test))
+
+# Plot outputs
+# plt.scatter(x_test, y_test,  color='black')
+# plt.plot(x_test, regr.predict(x_test), color='blue',
+#          linewidth=3)
+
+# plt.xticks(())
+# plt.yticks(())
+
+# plt.show()
