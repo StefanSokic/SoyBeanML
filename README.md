@@ -11,3 +11,5 @@ completed branches are as follows:
 2. **multivariate-linear-regression** - Using scikit learn to predict yield
    based on all given geographical data. This includes features like top-soil,
    soil ph level, irrigation, precipitation, and many others. 
+2. **xgboost** - (in progress) Using xgboost to predict yield
+based on all given geographical data with gradient boosting. Xgboost has proven quite successful in recent kaggle competitions.
