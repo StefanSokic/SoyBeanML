@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from sklearn import linear_model
 import matplotlib.pyplot as plt
+import xgboost as xgb
 
 # import data intro dataframes
 df1 = pd.read_csv('dataset/training_data.csv')
@@ -39,12 +40,30 @@ y_train = train[target_col]
 x_test = test[feature_cols]
 y_test = test[target_col]
 
-# linear regression
-regr = linear_model.LinearRegression()
-regr.fit(x_train, y_train)
+# xgboost implementation
+param = {'max_depth': 2, 'eta': 1, 'silent': 1, 'objective': 'reg:linear'}
+watchlist = [(x_test, 'eval'), (x_train, 'train')]
 
-# showing some results
-print('Coefficients', regr.coef_)
-print("Mean squared error: %.2f" % np.mean((regr.predict(x_test) - y_test) ** 2))
-# Explained variance score: 1 is perfect prediction
-print('Variance score: %.2f' % regr.score(x_test, y_test))
+# train xgboost for 1 round
+bst = xgb.train(param, x_train, 1, watchlist)
+# Note: we need the margin value instead of transformed prediction in set_base_margin
+# do predict with output_margin=True, will always give you margin values before logistic transformation
+ptrain = bst.predict(x_train, output_margin=True)
+ptest = bst.predict(x_test, output_margin=True)
+dtrain.set_base_margin(ptrain)
+dtest.set_base_margin(ptest)
+
+print ('this is result of running from initial prediction')
+bst = xgb.train(param, dtrain, 1, watchlist)
+
+
+
+# scikit code
+# regr = linear_model.LinearRegression()
+# regr.fit(x_train, y_train)
+#
+# # showing some results
+# print('Coefficients', regr.coef_)
+# print("Mean squared error: %.2f" % np.mean((regr.predict(x_test) - y_test) ** 2))
+# # Explained variance score: 1 is perfect prediction
+# print('Variance score: %.2f' % regr.score(x_test, y_test))
