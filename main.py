@@ -41,14 +41,16 @@ x_test = test[feature_cols]
 y_test = test[target_col]
 
 # xgboost implementation
+xgb_train = xgb.DMatrix(x_train.values)
+xgb_test = xgb.DMatrix(x_test.values)
 param = {'max_depth': 2, 'eta': 1, 'silent': 1, 'objective': 'reg:linear'}
-watchlist = [(x_test, 'eval'), (x_train, 'train')]
+watchlist = [(xgb_test, 'eval'), (xgb_train, 'train')]
 
 # train xgboost for 1 round
-bst = xgb.train(param, x_train, 1, watchlist)
+bst = xgb.train(param, xgb_train, 1, watchlist)
 # Note: we need the margin value instead of transformed prediction in set_base_margin
 # do predict with output_margin=True, will always give you margin values before logistic transformation
-ptrain = bst.predict(x_train, output_margin=True)
+ptrain = bst.predict(xgb_train, output_margin=True)
 ptest = bst.predict(x_test, output_margin=True)
 dtrain.set_base_margin(ptrain)
 dtest.set_base_margin(ptest)
@@ -60,7 +62,7 @@ bst = xgb.train(param, dtrain, 1, watchlist)
 
 # scikit code
 # regr = linear_model.LinearRegression()
-# regr.fit(x_train, y_train)
+# regr.fit(xgb_train, y_train)
 #
 # # showing some results
 # print('Coefficients', regr.coef_)
