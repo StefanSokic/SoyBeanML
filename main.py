@@ -3,6 +3,7 @@ import numpy as np
 from sklearn import linear_model
 import matplotlib.pyplot as plt
 import xgboost as xgb
+from sklearn.metrics import confusion_matrix, mean_squared_error
 
 # import data intro dataframes
 df1 = pd.read_csv('dataset/training_data.csv')
@@ -35,25 +36,28 @@ test = clean_df.drop(train.index)
 target_col = ['YIELD']
 feature_cols = list(train)
 feature_cols.remove(target_col[0])
-x_train = train[feature_cols]
-y_train = train[target_col]
-x_test = test[feature_cols]
-y_test = test[target_col]
+x_train = np.array(train[feature_cols])
+y_train = np.array(train[target_col])
+x_test = np.array(test[feature_cols])
+y_test = np.array(test[target_col])
 
 # xgboost implementation
-print('before', x_train.values)
-xgb_x_train = xgb.DMatrix(x_train.values)
-print('after', xgb_x_train)
-xgb_y_train = xgb.DMatrix(y_train.values)
-xgb_test = xgb.DMatrix(x_test)
+x_train = x_train
+y_train = y_train
 
 model = xgb.XGBRegressor()
-model.fit(xgb_x_train, xgb_y_train)
+model.fit(x_train, y_train)
+y_pred = model.predict(x_test)
 
-# y_pred = model.predict(x_test)
+y_train_pred = model.predict(x_train)
+
+print(mean_squared_error(y_test, y_pred))
+print(mean_squared_error(y_train, y_train_pred))
+
 # predictions = [round(value) for value in y_pred]
-# accuracy = accuracy_score(y_test, predictions)
+# accuracy = xgb.accuracy_score(y_test, predictions)
 # print("Accuracy: %.2f%%" % (accuracy * 100.0))
+
 
 # param = {'max_depth': 2, 'eta': 1, 'silent': 1, 'objective': 'reg:linear'}
 # watchlist = [(xgb_test, 'eval'), (xgb_train, 'train')]
