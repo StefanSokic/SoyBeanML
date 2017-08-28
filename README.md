@@ -1,6 +1,6 @@
 # SoyBeanML
 The dataset I am working with gives all kinds of geographical and genetic
-data about different varieties of soy beans. I am using various machine
+data about different varieties of soy beans. I am using various regression machine
 learning models to best predict which growing conditions and plant types
 produce optimal yields. 
 ### Progress 
