@@ -10,11 +10,18 @@ df1 = pd.read_csv('dataset/training_data.csv')
 df2 = pd.read_csv('dataset/Geographic_information.csv')
 
 # joining the 2 dataframes on the 'LOCATION' columns
-merged_df = pd.merge(df1, df2, how='outer', on='LOCATION')
+# ONLY TRAINING ON 20,000 examples as opposed to 100,000 (too computationally expensive otherwise)
+merged_df = pd.merge(df1, df2, how='outer', on='LOCATION').head(20000)
+
+# one hot encoding columns
+onehot_variety = pd.get_dummies(merged_df['VARIETY'])
+onehot_family = pd.get_dummies(merged_df['FAMILY'])
+onehot_year = pd.get_dummies(merged_df['YEAR'])
+ready_df = pd.concat([merged_df, onehot_variety, onehot_family, onehot_year], axis=1)
 
 # removing NaN columns
-clean_df = merged_df._get_numeric_data()
-print('clean df', clean_df.head(5).to_string())
+clean_df = ready_df._get_numeric_data().drop(['CHECK', 'LOCATION', 'CLASS_OF'], axis=1)
+print(clean_df.head(5).to_string())
 
 # 80/20 split of the data for training and testing
 train = clean_df.sample(frac=0.8, random_state=200)
@@ -38,3 +45,4 @@ y_pred = model.predict(x_test)
 print(mean_squared_error(y_test, y_pred))
 # print(mean_squared_error(y_train, y_train_pred))
 
+# 53.95
