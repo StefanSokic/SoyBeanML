@@ -16,5 +16,7 @@ completed branches are as follows:
 3. **xgboost** - Using xgboost to predict yield
 based on all given geographical data with gradient boosting. Xgboost has proven quite successful in recent kaggle competitions.   
 Result: _76.47 mean squared error_  
+4. **xgboost-with-feature-engineering** - On top of just using xgboost I have one hot encoded a few columns including year, plant variety, and plant family.
+Result: _53.95 mean squared error on only 1/5 of training data_   
   
   Improvement!!
