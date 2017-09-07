@@ -4,7 +4,7 @@ data about different varieties of soy beans. I am using various regression machi
 learning models to best predict which growing conditions and plant types
 produce optimal yields. 
 ### Progress 
-Different attempts at predicting yield are in different branches. So far the
+Different attempts at predicting yield are in different branches and in files on the master branch. So far the
 completed branches are as follows:
 1. **univariate-linear-regression** - Using scikit learn  to predict
    yield based only on temperature.   
